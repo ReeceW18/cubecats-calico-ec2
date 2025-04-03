@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Received Data</title>
+</head>
+<body>
+    <h1>Received JSON Data</h1>
+    {% if data_with_time %}
+        <ul>
+        {% for item in data_with_time %}
+            <li>
+                <strong>File Write Time:</strong> {{ item.file_write_time }}<br>
+                <strong>Data:</strong>
+                <pre>{{ item.data|tojson(indent=4) }}</pre>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No data received yet.</p>
+    {% endif %}
+</body>
+</html>
