@@ -1,22 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Received Data</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor Data Display</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Received JSON Data</h1>
-    {% if data_with_time %}
-        <ul>
-        {% for item in data_with_time %}
-            <li>
-                <strong>File Write Time:</strong> {{ item.file_write_time }}<br>
-                <strong>Data:</strong>
-                <pre>{{ item.data|tojson(indent=4) }}</pre>
-            </li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No data received yet.</p>
-    {% endif %}
+    <h1>Sensor Data Records</h1>
+
+    <div class="data-records-container">
+        {% if rockblock_data and decoded_data and rockblock_data|length == decoded_data|length %}
+            {% set data_length = rockblock_data|length %}
+            {% for i in range(data_length) %}
+                {% set current_index = data_length - 1 - i %}
+                <article class="record-card">
+                    <h2>Record #{{ i + 1 }} {% if i == 0 %}<span class="most-recent-tag">(Most Recent)</span>{% endif %}</h2>
+
+                    <div class="record-section time-highlight">
+                        <h3>Transmission Timestamps</h3>
+                        <p><strong>Transmit Time:</strong> {{ rockblock_data[current_index].transmit_time }}</p>
+                        <p><strong>Receive Time:</strong> {{ rockblock_data[current_index].receive_time }}</p>
+                    </div>
+
+                    
+
+                    <div class="record-section decoded-details">
+                        <h3>Decoded Sensor Data</h3>
+                        <div class="sub-section device-time">
+                            <h4>Device Time</h4>
+                            <p><strong>Time:</strong> {{ "%02d:%02d:%02d" | format(decoded_data[current_index].time.hour, decoded_data[current_index].time.minute, decoded_data[current_index].time.second) }}</p>
+                        </div>
+
+                        <div class="sub-section gps-data">
+                            <h4>GPS Data</h4>
+                            <p><strong>Latitude:</strong> {{ decoded_data[current_index].gps.latitude }}</p>
+                            <p><strong>Longitude:</strong> {{ decoded_data[current_index].gps.longitude }}</p>
+                            <p><strong>Altitude:</strong> {{ decoded_data[current_index].gps.altitude }} m</p>
+                            <p><strong>Satellites:</strong> {{ decoded_data[current_index].gps.satellites }}</p>
+                            <p><strong>Fix Type:</strong> {{ decoded_data[current_index].gps.fixtype }}</p>
+                        </div>
+
+                        <div class="sub-section sensor-readings">
+                            <h4>Sensor Readings</h4>
+                            <p><strong>NO2:</strong> {{ decoded_data[current_index].sensors.NO2 }}</p>
+                            <p><strong>C2H5OH:</strong> {{ decoded_data[current_index].sensors.C2H5OH }}</p>
+                            <p><strong>VOC:</strong> {{ decoded_data[current_index].sensors.VOC }}</p>
+                            <p><strong>CO:</strong> {{ decoded_data[current_index].sensors.CO }}</p>
+                            <p><strong>Ozone:</strong> {{ decoded_data[current_index].sensors.ozone }}</p>
+                            <p><strong>Pressure:</strong> {{ decoded_data[current_index].sensors.pressure }}</p>
+                            <p><strong>UV Index:</strong> {{ decoded_data[current_index].sensors.uv }}</p>
+                            <p><strong>Lux:</strong> {{ decoded_data[current_index].sensors.lux }} Lux</p>
+                            <p><strong>Temp:</strong> {{ decoded_data[current_index].sensors.temperature }} °C</p>
+                            <p><strong>Humidity:</strong> {{ decoded_data[current_index].sensors.humidity }} %</p>
+                        </div>
+                    </div>
+
+                    <div class="record-section rockblock-details">
+                        <h3>Rockblock Metadata</h3>
+                        <p><strong>MOMSN:</strong> {{ rockblock_data[current_index].momsn }}</p>
+                        <p><strong>RBLatitude:</strong> {{ rockblock_data[current_index].iridium_latitude }}</p>
+                        <p><strong>RBLongitude:</strong> {{ rockblock_data[current_index].iridium_longitude }}</p>
+                        <p><strong>Iridium CEP:</strong> {{ rockblock_data[current_index].iridium_cep }} km</p>
+                    </div>
+                </article>
+            {% endfor %}
+        {% else %}
+            <p class="error-text">No valid data records found or data mismatch between sources.</p>
+        {% endif %}
+    </div>
+
 </body>
 </html>

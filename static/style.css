@@ -1,0 +1,241 @@
+/* General Body Styling */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    line-height: 1.6;
+    margin: 10px; /* Combined margin */
+    padding: 20px;
+    background-color: #f8f9fa; /* Light gray background */
+    color: #343a40; /* Dark gray text */
+    font-size: 0.9em; /* Added from style block */
+}
+
+/* Heading Styling */
+h1 {
+    text-align: center;
+    color: #0056b3; /* Darker blue */
+    border-bottom: 3px solid #007bff; /* Standard blue */
+    padding-bottom: 10px;
+    margin-bottom: 25px;
+}
+
+h2, h3, h4 {
+    color: #17a2b8; /* Info blue/cyan */
+    margin-bottom: 0.5em;
+}
+
+h2 { /* Record Card Title */
+    margin-top: 0;
+    border-bottom: 1px solid #dee2e6; /* Light gray border */
+    padding-bottom: 8px;
+    font-size: 1.6em;
+}
+
+h3 { /* Section Titles */
+    font-size: 1.3em;
+    color: #007bff; /* Standard blue */
+}
+
+h4 { /* Sub-section Titles */
+    font-size: 1.1em;
+    color: #6c757d; /* Muted gray */
+    margin-bottom: 8px;
+}
+
+/* Info/Error Text */
+.info-text {
+    text-align: center;
+    font-style: italic;
+    color: #6c757d; /* Muted gray */
+    margin-bottom: 0.8em; /* Combined margin-bottom */
+    font-size: 0.95em; /* Added from style block */
+}
+
+.error-text {
+    text-align: center;
+    color: #dc3545; /* Red for errors */
+    font-weight: bold;
+    margin-top: 30px;
+}
+
+/* Container for all records */
+.data-records-container {
+    max-width: 900px; /* Max width for readability */
+    margin: 0 auto; /* Center the container */
+    display: flex;
+    flex-direction: column;
+    gap: 30px; /* Space between record cards */
+    /* Removed grid layout from style block */
+}
+
+/* Individual Record Card Styling */
+.record-card {
+    background-color: #ffffff; /* White background */
+    border: 1px solid #dee2e6; /* Light gray border */
+    border-radius: 8px;
+    padding: 25px; /* Using the more detailed padding */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    transition: box-shadow 0.3s ease;
+    margin-bottom: 10px; /* Added from style block */
+}
+
+.record-card:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Slightly larger shadow on hover */
+}
+
+/* Section Styling */
+.record-section {
+    margin-bottom: 0.8em; /* Combined margin-bottom */
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #e9ecef; /* Dashed separator */
+    display: grid; /* Added from style block */
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Added from style block */
+    gap: 10px; /* Added from style block */
+}
+
+.record-section:last-child {
+    border-bottom: none; /* Remove border from last section */
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.record-section h3 {
+    font-size: 1.1em; /* Added from style block */
+    margin-top: 0;
+    grid-column: 1 / -1; /* Make heading span full width */ /* Added from style block */
+    color: #007bff; /* Using the more specific color */
+}
+
+.record-section p {
+    margin-bottom: 0.1em; /* Added from style block */
+    line-height: 1.3; /* Added from style block */
+    margin: 0.4em 0; /* Keeping both for potential specificity */
+    color: #495057;
+}
+
+/* Special Highlight for Time Section */
+.time-highlight {
+    background-color: #e7f3ff; /* Very light blue */
+    border-left: 5px solid #007bff; /* Solid blue left border */
+    padding: 15px 20px;
+    margin: -25px -25px 25px -25px; /* Extend to card edges */
+    border-radius: 8px 8px 0 0; /* Round top corners */
+    border-bottom: 1px solid #dee2e6; /* Add bottom border back */
+}
+
+.time-highlight h3 {
+    margin-top: 0;
+    color: #0056b3; /* Darker blue for title */
+    font-size: 1em; /* Overriding the more general h3 style */
+}
+
+.time-highlight p {
+    font-size: 1.1em;
+    font-weight: 500; /* Medium weight */
+    margin: 5px 0;
+    color: #004085; /* Even darker blue text */
+}
+
+/* Sub-section styling (within Decoded Data) */
+.sub-section {
+    background-color: #fdfdff; /* Very subtle off-white */
+    border: 1px solid #eef;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 0.6em; /* Combined margin-bottom */
+}
+
+.sub-section:last-child {
+    margin-bottom: 0;
+}
+
+.sub-section h4 {
+    font-size: 1em; /* Added from style block */
+    margin-top: 0.3em; /* Added from style block */
+    margin-bottom: 0.2em; /* Added from style block */
+    grid-column: 1 / -1; /* Make heading span full width */ /* Added from style block */
+    color: #6c757d; /* Using the more general h4 color */
+}
+
+.sub-section p {
+    margin-bottom: 0.1em; /* Added from style block */
+    line-height: 1.3; /* Added from style block */
+    margin: 0.4em 0; /* Keeping both */
+    color: #495057;
+}
+
+/* Strong Tag Styling */
+strong {
+    color: #343a40; /* Dark gray */
+    font-weight: 600; /* Bolder */
+}
+
+/* Most Recent Tag */
+.most-recent-tag {
+    font-size: 0.8em; /* Added from style block */
+    color: green; /* Added from style block */
+}
+
+/* Specific styling for sub-sections to align items better in columns */
+.sub-section.device-time { grid-column: span 1; }
+.sub-section.gps-data { grid-column: 2 / -1 ; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 5px; } /* Example: GPS data might need more space */
+.sub-section.sensor-readings { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 5px; }
+.sub-section.sensor-readings h4 { grid-column: 1 / -1; }
+.sub-section.sensor-readings p { margin-bottom: 0; }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 1.8em;
+    }
+
+    .record-card {
+        padding: 20px;
+    }
+
+    .time-highlight {
+         margin: -20px -20px 20px -20px; /* Adjust negative margins */
+         padding: 12px 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+     h2 { /* Record Card Title */
+        font-size: 1.4em;
+    }
+
+    h3 { /* Section Titles */
+        font-size: 1.2em;
+    }
+
+    .record-card {
+        padding: 15px;
+        border-radius: 5px;
+    }
+
+    .time-highlight {
+         margin: -15px -15px 15px -15px;
+         padding: 10px 12px;
+         border-left-width: 4px;
+         border-radius: 5px 5px 0 0;
+    }
+
+    .time-highlight p {
+        font-size: 1em;
+    }
+
+    .sub-section {
+        padding: 10px;
+    }
+}

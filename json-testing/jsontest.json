@@ -2,9 +2,9 @@
     "imei": "300234010753370",
     "serial": "12345",
     "momsn": 12345,
-    "transmit_time": "21-10-31 10:41:50",
+    "transmit_time": "TESTING DATA",
     "iridium_latitude": 52.3867,
     "iridium_longitude": 0.2938,
     "iridium_cep": 8,
-    "data": "48656c6c6f20576f726c6420526f636b424c4f434b"
+    "data": "0A1E080100000002000000030000000C01040000000500000006000000070000000AF00000803F0000404000008040000020410000803F"
 }
