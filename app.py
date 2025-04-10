@@ -11,6 +11,7 @@ app = Flask(__name__)
 # File names
 messages_file = 'rockblock_messages.jsonl'
 data_file = 'decoded_data.jsonl'
+numPackets = 4
 
 # Landing page, redirects to /display_data
 @app.route('/')
@@ -30,7 +31,8 @@ def display_data():
             decoded_data.append(json.loads(line))
     with open(messages_file, 'r') as f:
         for line in f:
-            rockblock_data.append(json.loads(line))
+            for i in range(numPackets):
+                rockblock_data.append(json.loads(line))
 
     return render_template('display_data.html', decoded_data=decoded_data, rockblock_data=rockblock_data)
 
@@ -73,57 +75,63 @@ def unpack_data(data_json):
         print("Invalid hex-encoded data")
 
     # create empty dictionary to hold decoded data and offset to track location in data
-    decoded_data = {}
     offset = 0
+    for i in range(numPackets):
+        decoded_data = {}
+        
+    
+        try:
+            decoded_data['identifier'] = {
+                'index': i
+            }
+            # Time (3 bytes)
+            decoded_data['time'] = {
+                'second': byte_data[offset],
+                'minute': byte_data[offset + 1],
+                'hour': byte_data[offset + 2]
+            }
+            offset += 3
+    
+            # GPS (14 bytes), <I is little-endian unsigned int (4 bytes), make sure to use the correct endianness
+            decoded_data['gps'] = {
+                'latitude': struct.unpack('<I', byte_data[offset:offset + 4])[0],  # uint32_t (4 bytes)
+                'longitude': struct.unpack('<I', byte_data[offset + 4:offset + 8])[0], # uint32_t (4 bytes)
+                'altitude': struct.unpack('<I', byte_data[offset + 8:offset + 12])[0],  # uint32_t (4 bytes)
+                'satellites': byte_data[offset + 12],                                  # uint8_t (1 byte)
+                'fixtype': byte_data[offset + 13]                                     # uint8_t (1 byte)
+            }
+            offset += 14
+    
+            # Sensors (38 bytes)
+            decoded_data['sensors'] = {
+                'NO2': struct.unpack('<I', byte_data[offset:offset + 4])[0],     # uint32_t (4 bytes)
+                'C2H5OH': struct.unpack('<I', byte_data[offset + 4:offset + 8])[0],  # uint32_t (4 bytes)
+                'VOC': struct.unpack('<I', byte_data[offset + 8:offset + 12])[0],   # uint32_t (4 bytes)
+                'CO': struct.unpack('<I', byte_data[offset + 12:offset + 16])[0],    # uint32_t (4 bytes)
+                'ozone': struct.unpack('<H', byte_data[offset + 16:offset + 18])[0],  # uint16_t (2 bytes)
+                'pressure': struct.unpack('<f', byte_data[offset + 18:offset + 22])[0], # float (4 bytes)
+                'uv': struct.unpack('<f', byte_data[offset + 22:offset + 26])[0],     # float (4 bytes)
+                'lux': struct.unpack('<f', byte_data[offset + 26:offset + 30])[0],    # float (4 bytes)
+                'temperature': struct.unpack('<f', byte_data[offset + 30:offset + 34])[0], # float (4 bytes)
+                'humidity': struct.unpack('<f', byte_data[offset + 34:offset + 38])[0]  # float (4 bytes)
+            }
+            offset += 38
+    
+            # warn if there was more data than expected
+            if offset != len(byte_data):
+                print(f"Warning: Data length mismatch. Expected {3 + 14 + 38} bytes, got {len(byte_data)} bytes.")
+    
+            # Save decoded data to file
+            save_to_file(decoded_data, data_file)
+    
+        except struct.error as e:
+            print(f"Error unpacking data at index {i}: {e}")
+            return -1
+        except IndexError:
+            print(f"Incomplete data received. Not enough bytes to unpack. Triggered at index {i}")
+            return -1
+    return -1
 
-    try:
-        # Time (3 bytes)
-        decoded_data['time'] = {
-            'second': byte_data[offset],
-            'minute': byte_data[offset + 1],
-            'hour': byte_data[offset + 2]
-        }
-        offset += 3
-
-        # GPS (14 bytes), <I is little-endian unsigned int (4 bytes), make sure to use the correct endianness
-        decoded_data['gps'] = {
-            'latitude': struct.unpack('<I', byte_data[offset:offset + 4])[0],  # uint32_t (4 bytes)
-            'longitude': struct.unpack('<I', byte_data[offset + 4:offset + 8])[0], # uint32_t (4 bytes)
-            'altitude': struct.unpack('<I', byte_data[offset + 8:offset + 12])[0],  # uint32_t (4 bytes)
-            'satellites': byte_data[offset + 12],                                  # uint8_t (1 byte)
-            'fixtype': byte_data[offset + 13]                                     # uint8_t (1 byte)
-        }
-        offset += 14
-
-        # Sensors (38 bytes)
-        decoded_data['sensors'] = {
-            'NO2': struct.unpack('<I', byte_data[offset:offset + 4])[0],     # uint32_t (4 bytes)
-            'C2H5OH': struct.unpack('<I', byte_data[offset + 4:offset + 8])[0],  # uint32_t (4 bytes)
-            'VOC': struct.unpack('<I', byte_data[offset + 8:offset + 12])[0],   # uint32_t (4 bytes)
-            'CO': struct.unpack('<I', byte_data[offset + 12:offset + 16])[0],    # uint32_t (4 bytes)
-            'ozone': struct.unpack('<H', byte_data[offset + 16:offset + 18])[0],  # uint16_t (2 bytes)
-            'pressure': struct.unpack('<f', byte_data[offset + 18:offset + 22])[0], # float (4 bytes)
-            'uv': struct.unpack('<f', byte_data[offset + 22:offset + 26])[0],     # float (4 bytes)
-            'lux': struct.unpack('<f', byte_data[offset + 26:offset + 30])[0],    # float (4 bytes)
-            'temperature': struct.unpack('<f', byte_data[offset + 30:offset + 34])[0], # float (4 bytes)
-            'humidity': struct.unpack('<f', byte_data[offset + 34:offset + 38])[0]  # float (4 bytes)
-        }
-        offset += 38
-
-        # warn if there was more data than expected
-        if offset != len(byte_data):
-            print(f"Warning: Data length mismatch. Expected {3 + 14 + 38} bytes, got {len(byte_data)} bytes.")
-
-        # Save decoded data to file
-        save_to_file(decoded_data, data_file)
-        return -1
-
-    except struct.error as e:
-        print(f"Error unpacking data: {e}")
-        return -1
-    except IndexError:
-        print("Incomplete data received. Not enough bytes to unpack.")
-        return -1
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)  # Runs the server on port 5000

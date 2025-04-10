@@ -15,7 +15,7 @@
             {% for i in range(data_length) %}
                 {% set current_index = data_length - 1 - i %}
                 <article class="record-card">
-                    <h2>Record #{{ i + 1 }} {% if i == 0 %}<span class="most-recent-tag">(Most Recent)</span>{% endif %}</h2>
+                    <h2>Record #{{ data_length - i }}, In Message #{{ ((data_length - i - 1)/4)|int + 1 }} {% if i == 0 %}<span class="most-recent-tag">(Most Recent)</span>{% endif %}</h2>
 
                     <div class="record-section time-highlight">
                         <h3>Transmission Timestamps</h3>
@@ -62,6 +62,7 @@
                         <p><strong>RBLatitude:</strong> {{ rockblock_data[current_index].iridium_latitude }}</p>
                         <p><strong>RBLongitude:</strong> {{ rockblock_data[current_index].iridium_longitude }}</p>
                         <p><strong>Iridium CEP:</strong> {{ rockblock_data[current_index].iridium_cep }} km</p>
+                        <p><strong>Packet Index:</strong> {{ decoded_data[current_index].identifier.index }}</p>
                     </div>
                 </article>
             {% endfor %}
