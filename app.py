@@ -34,6 +34,16 @@ def display_data():
             for i in range(numPackets):
                 rockblock_data.append(json.loads(line))
 
+    for i in range(len(decoded_data)):
+        while decoded_data[i]["momsn"] != rockblock_data[i]["momsn"]:
+            rockblock_data.pop(i)
+    
+    rockblock_data = rockblock_data[:len(decoded_data)]
+    
+    print("test")
+    print(decoded_data)
+    print(rockblock_data)
+
     return render_template('display_data.html', decoded_data=decoded_data, rockblock_data=rockblock_data)
 
 # saves json to file as json lines
@@ -67,6 +77,8 @@ def unpack_data(data_json):
         print("Missing or invalid 'data' field in JSON")
         return -1
 
+
+
     # pull out data and convert to bytes
     hex_data = data_json['data']
     try:
@@ -79,7 +91,8 @@ def unpack_data(data_json):
     for i in range(numPackets):
         decoded_data = {}
         
-    
+        decoded_data['momsn'] = data_json['momsn']
+
         try:
             decoded_data['identifier'] = {
                 'index': i

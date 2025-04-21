@@ -15,7 +15,7 @@
             {% for i in range(data_length) %}
                 {% set current_index = data_length - 1 - i %}
                 <article class="record-card">
-                    <h2>Record #{{ data_length - i }}, In Message #{{ ((data_length - i - 1)/4)|int + 1 }} {% if i == 0 %}<span class="most-recent-tag">(Most Recent)</span>{% endif %}</h2>
+                    <h2>Record #{{ data_length - i }}, MOMSN #{{ decoded_data[current_index].momsn }} {% if i == 0 %}<span class="most-recent-tag">(Most Recent)</span>{% endif %}</h2>
 
                     <div class="record-section time-highlight">
                         <h3>Transmission Timestamps</h3>
